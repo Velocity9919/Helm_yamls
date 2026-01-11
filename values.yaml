@@ -1,0 +1,46 @@
+namespace: realtime-prod
+
+replicaCount: 3
+
+image:
+  repository: your-docker-repo/realtime-app
+  tag: latest
+
+service:
+  port: 80
+  targetPort: 3000
+
+ingress:
+  enabled: true
+  className: nginx
+  host: realtime.example.com
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+config:
+  APP_ENV: production
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+
+secret:
+  JWT_SECRET: supersecretkey
+
+hpa:
+  enabled: true
+  min: 3
+  max: 10
+  cpu: 70
+
+serviceAccount:
+  name: realtime-sa
+  roleArn: arn:aws:iam::123456789012:role/realtime-role
+
+redis:
+  enabled: true
+  image: redis:7
